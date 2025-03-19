@@ -1,0 +1,17 @@
+from pwn import *
+p = process("/challenge/embryogdb_level6")
+p.recvuntil(b"(gdb) ")
+p.sendline(b"run")
+p.recvuntil(b"(gdb) ")
+p.sendline(b"b *main+577")
+p.recvuntil(b"(gdb) ")
+p.sendline(b"c")
+for i in range(64):
+        p.recvuntil(b"(gdb) ")
+        p.sendline(b"x/gx $rbp-0x18")
+        rsp_val = p.recvline()
+        rand_val = rsp_val.strip().split(b':')[1].strip()
+        p.sendline(b"c")
+        p.recvuntil(b"Random value: ")
+        p.sendline(rand_val)
+p.interactive()
